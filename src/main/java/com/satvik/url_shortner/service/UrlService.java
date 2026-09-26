@@ -1,6 +1,7 @@
 package com.satvik.url_shortner.service;
 
 import com.satvik.url_shortner.entity.UrlMapping;
+import com.satvik.url_shortner.exception.UrlNotFoundException;
 import com.satvik.url_shortner.repository.UrlRepository;
 import com.satvik.url_shortner.util.Base62;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class UrlService {
 
      public String getOriginalurl(String shortcode){
          //checks whether optional[urlrepo] object has some id to return else throws exception
-         UrlMapping mapping = urlrepository.findByShortcode(shortcode).orElseThrow(() -> new RuntimeException("No URL Found at:" + shortcode));
+         UrlMapping mapping = urlrepository.findByShortcode(shortcode).orElseThrow(() -> new UrlNotFoundException("No URL Found at:" + shortcode));
          return mapping.getOriginalUrl();
      }
 }

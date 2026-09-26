@@ -1,0 +1,44 @@
+url-shortner/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── satvik/
+│   │   │           └── url_shortner/
+│   │   │               ├── UrlShortnerApplication.java     (package: com.satvik.url_shortner)
+│   │   │               ├── entity/
+│   │   │               │   ├── UrlMapping.java              (package: com.satvik.url_shortner.entity)
+│   │   │               │   ├── UserEntity.java               (package: com.satvik.url_shortner.entity)
+│   │   │               │   └── Role.java                     (package: com.satvik.url_shortner.entity)
+│   │   │               ├── dto/
+│   │   │               │   ├── ShortenUrlRequest.java        (package: com.satvik.url_shortner.dto)
+│   │   │               │   ├── RegisterRequest.java          (package: com.satvik.url_shortner.dto)
+│   │   │               │   └── LoginRequest.java             (package: com.satvik.url_shortner.dto)
+│   │   │               ├── repository/
+│   │   │               │   ├── UrlRepository.java            (package: com.satvik.url_shortner.repository)
+│   │   │               │   └── UserRepository.java           (package: com.satvik.url_shortner.repository)
+│   │   │               ├── service/
+│   │   │               │   └── UrlService.java                (package: com.satvik.url_shortner.service)
+│   │   │               ├── controller/
+│   │   │               │   ├── UrlController.java            (package: com.satvik.url_shortner.controller)
+│   │   │               │   └── AuthController.java           (package: com.satvik.url_shortner.controller)
+│   │   │               ├── util/
+│   │   │               │   ├── Base62.java                    (package: com.satvik.url_shortner.util)
+│   │   │               │   └── JwtUtil.java                   (package: com.satvik.url_shortner.util)
+│   │   │               ├── filter/
+│   │   │               │   └── JwtAuthFilter.java             (package: com.satvik.url_shortner.filter)
+│   │   │               ├── config/
+│   │   │               │   └── SecurityConfig.java            (package: com.satvik.url_shortner.config)
+│   │   │               └── exception/
+│   │   │                   ├── GlobalExceptionHandler.java   (package: com.satvik.url_shortner.exception)
+│   │   │                   └── UrlNotFoundException.java     (package: com.satvik.url_shortner.exception)
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+│           └── com/satvik/url_shortner/
+│               ├── UrlShortnerApplicationTests.java
+│               └── util/
+│                   ├── Base62Test.java
+│                   └── JwtUtilTest.java
+├── pom.xml
