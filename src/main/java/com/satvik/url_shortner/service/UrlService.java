@@ -34,7 +34,8 @@ public class UrlService {
 
      public String getOriginalurl(String shortcode){
          //checks whether optional[urlrepo] object has some id to return else throws exception
-         UrlMapping mapping = urlrepository.findByShortcode(shortcode).orElseThrow(() -> new UrlNotFoundException("No URL Found at:" + shortcode));
+         UrlMapping mapping = urlrepository.findByShortcode(shortcode)
+                 .orElseThrow(() -> new UrlNotFoundException("No URL Found at:" + shortcode));
          return mapping.getOriginalUrl();
      }
 }

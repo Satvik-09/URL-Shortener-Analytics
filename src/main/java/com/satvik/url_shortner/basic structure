@@ -42,3 +42,98 @@ url-shortner/
 │                   ├── Base62Test.java
 │                   └── JwtUtilTest.java
 ├── pom.xml
+
+
+//real one
+    eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjMiLCJpYXQiOjE3OTA4ODk1NDIsImV4cCI6MTc5MDg5MzE0Mn0.ZEiu0wQSRR82oi4tpuhswhIrt0oxrh4JgeiqEuQjrpM
+//tampered one
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjMiLCJpYXQiOjE3OTA4ODk1NDIsImV4CCI6MTc5MDg5MzE0Mn0.ZEiu0wQSRR82oi4tpuhswhIrt0oxrh4JgeiqEuQjrpM
+
+
+
+TESTED USING CURL INSIDE THE COMMAND PROMPT
+
+
+Microsoft Windows [Version 10.0.19045.7725]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\dell>curl -i -X POST http://localhost:8080/auth/register -H "Content-Type: application/json" -d "{\"username\": \"satvik\", \"password\": \"pass123\"}"
+HTTP/1.1 200
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 23
+Date: Mon, 05 Oct 2026 18:49:39 GMT
+
+Registered Successfully
+C:\Users\dell>curl -i -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d "{\"username\": \"satvik\", \"password\": \"pass123\"}"
+HTTP/1.1 200
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 132
+Date: Mon, 05 Oct 2026 18:49:49 GMT
+
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXR2aWsiLCJpYXQiOjE3OTEyMjYxODksImV4cCI6MTc5MTIyOTc4OX0.dta8aiNg2GuzNWJmLsOIG65CmGtcGUsh07VhE-1n9u0
+C:\Users\dell>curl -i -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d "{\"username\": \"satvik\", \"password\": \"wrongpass\"}"
+HTTP/1.1 401
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 19
+Date: Mon, 05 Oct 2026 18:49:59 GMT
+
+Invalid Credentials
+C:\Users\dell>curl -i -X POST http://localhost:8080/shorten -H "Content-Type: application/json" -d "{\"url\": \"https://www.youtube.com\"}"
+HTTP/1.1 200
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 1
+Date: Mon, 05 Oct 2026 18:50:19 GMT
+
+1
+C:\Users\dell>curl -i http://localhost:8080/admin/test
+HTTP/1.1 403
+Set-Cookie: JSESSIONID=1E2BBA83B9691FAD9D65FE66B1F63F37; Path=/; HttpOnly
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 05 Oct 2026 18:50:41 GMT
+
+{"timestamp":"2026-10-05T18:50:41.496Z","status":403,"error":"Forbidden","path":"/admin/test"}
+C:\Users\dell>curl -i -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXR2aWsiLCJpYXQiOjE3OTEyMjYxODksImV4cCI6MTc5MTIyOTc4OX0.dta8aiNg2GuzNWJmLsOIG65CmGtcGUsh07VhE-1n9u0" http://localhost:8080/admin/test
+HTTP/1.1 404
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 05 Oct 2026 18:51:45 GMT
+
+{"timestamp":"2026-10-05T18:51:45.504Z","status":404,"error":"Not Found","path":"/admin/test"}
+C:\Users\dell>
