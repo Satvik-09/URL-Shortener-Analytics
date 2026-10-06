@@ -1,4 +1,4 @@
-package com.satvik.url_shortner;
+package com.satvik.url_shortner.securityConfiguration;
 
 
 import com.satvik.url_shortner.Filter.JwtFilter;
@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Configuration
 public class SecurityConfig {
