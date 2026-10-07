@@ -1,65 +1,133 @@
-# URL Shortener with Analytics
+ URL Shortener with JWT Authentication
 
-A backend service built with Java and Spring Boot that shortens long URLs into compact codes and redirects users to the original URL.
+A Spring Boot backend that shortens URLs using Base62 encoding, with full JWT-based authentication, role-based route protection, and Docker Compose deployment backed by a persisted MySQL database.
 
-## Features (Current)
-- Shorten a long URL into a short code
-- Redirect from a short code to its original URL
-- Data persisted using Spring Data JPA with an H2 in-memory database
+Features
+URL Shortening — converts long URLs into compact, unique short codes using Base62 encoding of the database-assigned ID
+Authentication — user registration and login with BCrypt-hashed passwords
+Authorization — JWT-based stateless authentication; protected routes require a valid Bearer token, with role-based access control for admin-only endpoints
+Validation & Error Handling — request validation via Bean Validation annotations, with a global exception handler returning consistent JSON error responses
+Containerized — fully Dockerized with Docker Compose, running the application alongside a persisted MySQL instance
+Tech Stack
+Java 21, Spring Boot 4.1.1
+Spring Security, JWT (jjwt)
+Spring Data JPA, Hibernate
+MySQL (Docker), H2 (local dev)
+Docker & Docker Compose
+JUnit 5, Mockito
+Maven
+Architecture
+Client Request
+      │
+      ▼
+JwtAuthFilter ── checks every request for a Bearer token
+      │
+      ▼
+SecurityConfig ── decides: public route, or does this need auth?
+      │
+      ├── Public (permitAll) ──────────────┐
+      │                                     ▼
+      └── Protected (authenticated/role) ──▶ Controller
+                                               │
+                                               ▼
+                                            Service
+                                               │
+                                               ▼
+                                           Repository
+                                               │
+                                               ▼
+                                            Database
 
-## Features (Planned)
-- Custom Base62 encoding for short code generation (replacing temporary random codes)
-- Click analytics per short URL (count, last accessed)
-- Input validation and centralized exception handling
-- Optional link expiry
-- Deployment to a live environment
+(GlobalExceptionHandler wraps the Controller→Service→Repository chain,
+ catching exceptions and returning consistent JSON error responses.)
+API Endpoints
+Method	Endpoint	Auth required	Description
+POST	/auth/register	No	Register a new user
+POST	/auth/login	No	Authenticate and receive a JWT
+POST	/shorten	No	Shorten a long URL
+GET	/{code}	No	Redirect to the original URL
+GET	/protected-test	Yes (Bearer token)	Example protected route
+Getting Started
+Prerequisites
+Java 21
+Maven (or use the included mvnw wrapper)
+Docker Desktop
+Run locally (without Docker)
+bash
+./mvnw spring-boot:run
 
-## Tech Stack
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- H2 Database (in-memory, for development)
-- Maven
+The app starts on http://localhost:8080, backed by an in-memory H2 database.
 
-## API Endpoints
+Run with Docker Compose (recommended)
+bash
+docker-compose up --build
 
-### Shorten a URL
-POST /shorten
-Content-Type: application/json
+This starts the application alongside a MySQL container, with data persisted in a Docker volume.
 
-Request body:
-{
-  "url": "https://www.google.com"
-}
+To rebuild after code changes:
 
-Response: 200 OK with the generated short code as plain text.
+bash
+docker-compose up --build
 
-### Redirect to Original URL
-GET /{code}
+To stop:
 
-Response: 302 Found, redirects to the original URL associated with that code.
+bash
+docker-compose down
 
-## Running Locally
-1. Clone the repository
-2. Open the project in your IDE (IntelliJ recommended)
-3. Run UrlShortnerApplication.java
-4. App starts on http://localhost:8080
-5. Access the H2 console at http://localhost:8080/h2-console
-   - JDBC URL: jdbc:h2:mem:urlshortenerdb
-   - Username: sa
-   - Password: (leave blank)
+To stop and wipe the database volume:
 
-## Testing
-Use Postman (or similar) to test endpoints — see API Endpoints section above for request/response formats.
+bash
+docker-compose down -v
+Example Usage
 
-## Project Structure
-src/main/java/com/satvik/url_shortner/
-- entity/       -> JPA entities (database table mappings)
-- repository/   -> Spring Data JPA repositories
-- service/      -> Business logic
-- controller/   -> REST API endpoints
-- dto/          -> Request/response data transfer objects (in progress)
-- exception/    -> Custom exception handling (in progress)
+Register:
 
-## Author
-Satvik
+bash
+curl -X POST http://localhost:8080/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "satvik", "password": "pass123"}'
+
+Login:
+
+bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "satvik", "password": "pass123"}'
+
+Returns a JWT in the response body.
+
+Shorten a URL:
+
+bash
+curl -X POST http://localhost:8080/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.example.com"}'
+
+Access a protected route:
+
+bash
+curl -H "Authorization: Bearer <your-token>" http://localhost:8080/protected-test
+Running Tests
+bash
+./mvnw test
+
+Unit tests cover the Base62 encoder/decoder, the URL shortening service (with a mocked repository), and JWT token generation/validation, including rejection of tampered tokens.
+
+Development Workflow
+
+This project was built incrementally, with each layer tested before moving to the next:
+
+Entity, repository, and Base62 encoding logic — tested standalone
+Service and controller layers — manually tested via curl/Postman
+DTOs, validation, and global exception handling
+JWT authentication: registration, login, token-based route protection, and role-based access control
+Containerization with Docker and Docker Compose, migrating from in-memory H2 to persisted MySQL
+Unit testing with JUnit and Mockito
+Future Improvements
+Redis caching for frequently accessed short URL lookups
+Refresh token support
+Rate limiting on the /shorten endpoint
+CI/CD pipeline for automated testing and deployment
+Author
+
+Satvik — GitHub
