@@ -1,5 +1,7 @@
 # URL Shortener with JWT Authentication
 
+[![CI](https://github.com/Satvik-09/URL-Shortener-Analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/Satvik-09/URL-Shortener-Analytics/actions/workflows/ci.yml)
+
 A Spring Boot backend that shortens URLs using Base62 encoding, with full JWT-based authentication, role-based route protection, and Docker Compose deployment backed by a persisted MySQL database.
 
 ## Features
